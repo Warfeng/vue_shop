@@ -11,3 +11,5 @@ git checkout -b login
 使用element-ui
 -- 在根目录下创建路由
 创建路由、路由导航守卫
+-- 使用element-ui
+按需引入需要的组件
