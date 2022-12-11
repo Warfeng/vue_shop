@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import { Message } from 'element-ui';
 export default {
   name: 'Login',
   data() {
@@ -63,7 +62,6 @@ export default {
         this.$message.success('login 成功')
         // 1、登录成功之后将 token，保存在客户端 sessionStorage 中
         // 
-        console.log(res)
         window.sessionStorage.setItem("token", res.data.token)
         // 2、通过编程式导航跳转到后台主页，路由/home
         this.$router.push('/home')
