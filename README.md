@@ -56,3 +56,5 @@ this.$http.put
 
 删除 分类操作
 delete('categories/' + cat_id)
+
+完成商品分类
