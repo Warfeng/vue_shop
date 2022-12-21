@@ -51,5 +51,8 @@ data 中 columns 配置自定义列
 显示Dialog 将分类数据渲染到Cascader 多级联表
 
 编辑 分类名称
-this.$http.put(`categories/${this.cateId}/attributes/${this.editForm.attr_id}`,
-{attr_name:this.editForm.attr_name,attr_sel:this.activeName})
+this.$http.put
+('categories/' + this.editCate.cat_id, { cat_name: this.editCate.cat_name })
+
+删除 分类操作
+delete('categories/' + cat_id)

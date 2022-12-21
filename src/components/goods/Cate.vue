@@ -47,6 +47,22 @@
         </span>
       </el-dialog>
 
+<!--      编辑 对话框 -->
+      <el-dialog
+        title='修改名称'
+        :visible.sync='editDialogVisible'
+        width='50%'>
+        <el-form ref='editCateDialogRef' :model='editCateForm' label-width='70px'>
+          <el-form-item prop='cat_name' label='分类名称'>
+            <el-input v-model='editCateForm.cat_name'></el-input>
+          </el-form-item>
+        </el-form>
+        <span slot='footer' class='dialog-footer'>
+          <el-button @click='editDialogVisible = false'>取 消</el-button>
+          <el-button type='primary' @click='editCate'>确 定</el-button>
+        </span>
+      </el-dialog>
+
 <!--    表格  -->
     <tree-table class='tab'
       :data='cateList'
@@ -74,8 +90,8 @@
         <el-tag type='warning' size='mini' v-else>三级</el-tag>
       </template>
       <template slot='opt' slot-scope='scope'>
-        <el-button type='primary' icon='el-icon-edit' size='mini'>编辑</el-button>
-        <el-button type='danger' icon='el-icon-delete' size='mini'>删除</el-button>
+        <el-button type='primary' icon='el-icon-edit' size='mini' @click='showEditDialog(scope.row)'>编辑</el-button>
+        <el-button type='danger' icon='el-icon-delete' size='mini' @click='delCate(scope.row.cat_id)'>删除</el-button>
       </template>
     </tree-table>
 <!--      分页区-->
@@ -124,6 +140,8 @@ export default {
         cat_pid: 0,
         cat_level: 0
       },
+      // 编辑表单
+      editCateForm: {},
       // 添加分类的表单效验
       addCateFormRules: {
         cat_name: [
@@ -215,6 +233,36 @@ export default {
       this.selectedKeys = []
       this.addCateForm.cat_pid = 0
       this.addCateForm.cat_level = 0
+    },
+    // 编辑 分类名称 事件
+    async showEditDialog(row) {
+      const { data: res } = await this.$http.get('categories/' + row.cat_id)
+      this.editCateForm = res.data
+      this.editDialogVisible = true
+    },
+    // 编辑分类名称 确认事件
+    editCate() {
+      this.$refs.editCateDialogRef.validate(async valid => {
+        if(!valid) return
+        const { data: res } = await this.$http.put('categories/' + this.editCateForm.cat_id, { cat_name: this.editCateForm.cat_name})
+        console.log(res)
+        if(res.meta.status !== 200) {
+          return this.$message.error('修改名称失败')
+        }
+        this.editDialogVisible = false
+        this.$message.success('修改名称成功')
+        await this.getCateList()
+      })
+    },
+    async delCate(cat_id) {
+      // 使用确认框
+
+      const { data: res } = await this.$http.delete('categories/' + cat_id)
+      if(res.meta.status !== 200) {
+        return this.$message.error('删除失败')
+      }
+      this.$message.success('删除成功')
+      await this.getCateList()
     }
   }
 }
@@ -224,7 +272,5 @@ export default {
 .tab {
   margin-top: 15px;
 }
-.el-cascader {
-  width: 100%;
-}
+
 </style>
